@@ -25,6 +25,10 @@ The module takes the following variables as input:
   - **patroni_access**: Boolean indicating whether the client should have access to the patroni port (4443) on the load balancers (suitable for nodes needing administrative access to the cluster)
 - **bastion_group_ids**: List of ids of security groups that should have **bastion** access to the opensearch cluster
 - **metrics_server_group_ids**: List of ids of security groups that should have **metrics server** access to the opensearch cluster.
+- **fluentd_security_group**: Optional fluentd security group configuration. It has the following keys:
+  - **id**: Id of pre-existing security group to add fluentd rules to
+  - **member_port**: Port the remote fluentd node listens on for the postgres/patroni members
+  - **load_balancer_port**: Port the remote fluentd node listens on for the load balancers
 
 ## Output
 

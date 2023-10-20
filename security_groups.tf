@@ -266,3 +266,63 @@ resource "openstack_networking_secgroup_rule_v2" "metrics_server_load_balancer_i
   remote_group_id   = each.value
   security_group_id = openstack_networking_secgroup_v2.postgres_load_balancer.id
 }
+
+//Grant the postgres members access to the fluentd port and icmp on a fluentd node
+resource "openstack_networking_secgroup_rule_v2" "fluentd_member_tcp_access" {
+  count             = var.fluentd_security_group.id != "" ? 1 : 0
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = var.fluentd_security_group.member_port
+  port_range_max    = var.fluentd_security_group.member_port
+  remote_group_id   = openstack_networking_secgroup_v2.postgres_member.id
+  security_group_id = var.fluentd_security_group.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "fluentd_member_icmp_access_v4" {
+  count             = var.fluentd_security_group.id != "" ? 1 : 0
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "icmp"
+  remote_group_id   = openstack_networking_secgroup_v2.postgres_member.id
+  security_group_id = var.fluentd_security_group.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "fluentd_member_icmp_access_v6" {
+  count             = var.fluentd_security_group.id != "" ? 1 : 0
+  direction         = "ingress"
+  ethertype         = "IPv6"
+  protocol          = "ipv6-icmp"
+  remote_group_id   = openstack_networking_secgroup_v2.postgres_member.id
+  security_group_id = var.fluentd_security_group.id
+}
+
+//Grant the postgres load balancers access to the fluentd port and icmp on a fluentd node
+resource "openstack_networking_secgroup_rule_v2" "fluentd_load_balancer_tcp_access" {
+  count             = var.fluentd_security_group.id != "" ? 1 : 0
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = var.fluentd_security_group.load_balancer_port
+  port_range_max    = var.fluentd_security_group.load_balancer_port
+  remote_group_id   = openstack_networking_secgroup_v2.postgres_load_balancer.id
+  security_group_id = var.fluentd_security_group.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "fluentd_load_balancer_icmp_access_v4" {
+  count             = var.fluentd_security_group.id != "" ? 1 : 0
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "icmp"
+  remote_group_id   = openstack_networking_secgroup_v2.postgres_load_balancer.id
+  security_group_id = var.fluentd_security_group.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "fluentd_load_balancer_icmp_access_v6" {
+  count             = var.fluentd_security_group.id != "" ? 1 : 0
+  direction         = "ingress"
+  ethertype         = "IPv6"
+  protocol          = "ipv6-icmp"
+  remote_group_id   = openstack_networking_secgroup_v2.postgres_load_balancer.id
+  security_group_id = var.fluentd_security_group.id
+}

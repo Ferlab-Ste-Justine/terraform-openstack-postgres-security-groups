@@ -30,3 +30,17 @@ variable "metrics_server_group_ids" {
   type = list(string)
   default = []
 }
+
+variable "fluentd_security_group" {
+  description = "Fluentd security group configuration"
+  type        = object({
+    id                 = string
+    member_port        = number
+    load_balancer_port = number
+  })
+  default = {
+    id                 = ""
+    member_port        = 0
+    load_balancer_port = 0
+  }
+}
