@@ -208,7 +208,7 @@ resource "openstack_networking_secgroup_rule_v2" "bastion_load_balancer_icmp_acc
   security_group_id = openstack_networking_secgroup_v2.postgres_load_balancer.id
 }
 
-//Allow port 9100 and icmp traffic from metrics server
+//Allow port 4443, 9100 and icmp traffic from metrics server
 resource "openstack_networking_secgroup_rule_v2" "metrics_server_member_node_exporter_access" {
   for_each          = { for idx, id in var.metrics_server_group_ids : idx => id }
   direction         = "ingress"
@@ -216,6 +216,17 @@ resource "openstack_networking_secgroup_rule_v2" "metrics_server_member_node_exp
   protocol          = "tcp"
   port_range_min    = 9100
   port_range_max    = 9100
+  remote_group_id   = each.value
+  security_group_id = openstack_networking_secgroup_v2.postgres_member.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "metrics_server_member_patroni_access" {
+  for_each          = { for idx, id in var.metrics_server_group_ids : idx => id }
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 4443
+  port_range_max    = 4443
   remote_group_id   = each.value
   security_group_id = openstack_networking_secgroup_v2.postgres_member.id
 }

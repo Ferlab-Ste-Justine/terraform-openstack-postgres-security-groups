@@ -9,7 +9,7 @@ The following security group is created:
 Additionally, you can pass a list of groups that will fulfill each of the following roles:
 - **bastion**: Security groups that will have access to the members and load balancers on port **22** as well as icmp traffic.
 - **client**: Security groups that will have access to the load balancers on ports **5432** and/or **4443** (depends on access given to them on input) as well as icmp traffic.
-- **metrics_server**: Security groups that will have access to the members and load balancers on ports **9200** and **9100** as well as icmp traffic.
+- **metrics_server**: Security groups that will have access to the members and load balancers on port **9100** as well as icmp traffic. It will also have access to the members on port **4443** to have access to the patroni metrics.
 
 # Usage
 
